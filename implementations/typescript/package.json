@@ -1,19 +1,20 @@
 {
-  "description": "CARD.md protocol core: canonicalization, hash chain, Markdown emitter/parser/verifier for business-card/0.2",
+  "name": "@sid-protocol/core",
+  "version": "0.1.0",
+  "description": "SID — Sovereign ID / Super Intelligence Document (sid/0.1): canonicalization, hash chain, SID.md emitter/parser/verifier, kind-30401 birth event",
+  "license": "MIT",
+  "main": "dist/canonical.js",
+  "types": "dist/canonical.d.ts",
+  "type": "commonjs",
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "fixtures": "npm run build && node scripts/finalize-fixtures.js",
+    "test": "npm run build && node --test dist/tests/*.test.js"
+  },
   "devDependencies": {
     "@types/node": "^20.0.0",
     "ajv": "^8.17.1",
     "ajv-formats": "^3.0.1",
     "typescript": "^5.6.0"
-  },
-  "license": "MIT",
-  "main": "dist/business-md.js",
-  "name": "@card-protocol/core",
-  "scripts": {
-    "build": "tsc -p tsconfig.json",
-    "test": "npm run build && node --test dist/tests/*.test.js"
-  },
-  "type": "commonjs",
-  "types": "dist/business-md.d.ts",
-  "version": "0.2.0"
+  }
 }

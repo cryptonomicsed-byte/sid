@@ -1,10 +1,11 @@
 /**
- * CARD.md — canonical JSON helpers + emitter.
+ * canonical.ts — canonical JSON + hashing core for SID.
  *
- * canonicalJson / cardHash replicate Python's
- *   json.dumps(obj, sort_keys=True, separators=(",", ":"))
- * so the frontmatter `hash` in CARD.md equals the swarm's card["hash"].
- * Tampering with either view is detectable.
+ * Inherited verbatim in behaviour from card-protocol's business-md.ts, minus the
+ * business-card naming. canonicalJson replicates Python's
+ *   json.dumps(obj, sort_keys=True, separators=(",", ":"), ensure_ascii=True)
+ * so a SID's `hash` computed here equals the hash computed by any other
+ * conformant implementation. Tampering with either view is detectable.
  */
 import { createHash } from "crypto";
 
@@ -21,15 +22,14 @@ function canonValue(v: any): string {
   }
   if (typeof v === "string") return canonStr(v);
   if (typeof v === "number") {
-    if (!isFinite(v)) throw new Error("non-finite number in card");
+    if (!isFinite(v)) throw new Error("non-finite number in certificate");
     return JSON.stringify(v);
   }
   return JSON.stringify(v);
 }
 
-/** Bottom-up prune, mirroring Python's canonical._prune: empty arrays and
- *  empty objects as object values are identical to a missing key for
- *  identity purposes ("threats": [] === no threats key). */
+/** Bottom-up prune: an empty array or empty object as an object VALUE is
+ *  identical to a missing key for identity purposes ("skills": [] === no skills). */
 function prune(v: any): any {
   if (Array.isArray(v)) return v.map(prune);
   if (v !== null && typeof v === "object") {
@@ -45,8 +45,7 @@ function prune(v: any): any {
   return v;
 }
 
-/** JSON string with Python ensure_ascii semantics. Built without escapes:
- *  take JSON's own inner encoding, then rewrite every non-ASCII char. */
+/** JSON string with Python ensure_ascii semantics (surrogate pairs above the BMP). */
 function canonStr(s: string): string {
   const inner = JSON.stringify(s).slice(1, -1);
   let out = "";
@@ -66,13 +65,12 @@ function canonStr(s: string): string {
   return '"' + out + '"';
 }
 
-/** SHA-256 hex of the canonical JSON, excluding the card's own `hash`
- *  and any `_`-prefixed ephemeral fields. Equals the swarm's card["hash"]. */
-export function cardHash(card: any): string {
+/** SHA-256 hex of the canonical JSON, excluding the certificate's own `hash`
+ *  and any `_`-prefixed ephemeral field. */
+export function canonicalHash(obj: any): string {
   const body: any = {};
-  for (const k of Object.keys(card)) {
-    if (k !== "hash" && k.charAt(0) !== "_") body[k] = card[k];
+  for (const k of Object.keys(obj)) {
+    if (k !== "hash" && k.charAt(0) !== "_") body[k] = obj[k];
   }
   return createHash("sha256").update(canonicalJson(body), "utf8").digest("hex");
 }
-

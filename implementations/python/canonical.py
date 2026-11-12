@@ -1,10 +1,10 @@
-"""Canonical JSON for the card hash — shared by the swarm and all skills.
+"""Canonical JSON for the SID hash — the Python side of the byte-identical pair.
 
-The card hash must be byte-identical whether computed in Python (swarm,
-skills) or TypeScript (compiler). JS numbers are all doubles, so the
-canonical form normalizes integral floats to ints: Python's json.dumps
-writes 4.0 as "4.0" while JSON.stringify writes "4". Normalizing first
-keeps both sides in agreement.
+A SID's `hash` must be identical whether computed here (the OKF pipeline is
+Python) or in TypeScript (`implementations/typescript/src/canonical.ts`). JS
+numbers are all doubles, so the canonical form normalizes integral floats to
+ints: Python's json.dumps writes 4.0 as "4.0" while JSON.stringify writes "4".
+Normalizing first keeps both sides in agreement.
 """
 from __future__ import annotations
 
@@ -39,35 +39,33 @@ def _prune(v):
     return v
 
 
-def canonical_json(card: dict) -> str:
+def canonical_json(cert: dict) -> str:
     body = _canon_numbers(
-        {k: v for k, v in card.items() if k != "hash" and not k.startswith("_")}
+        {k: v for k, v in cert.items() if k != "hash" and not k.startswith("_")}
     )
     return json.dumps(_prune(body), sort_keys=True, separators=(",", ":"))
 
 
-def canonical_hash(card: dict) -> str:
-    return hashlib.sha256(canonical_json(card).encode()).hexdigest()
+def canonical_hash(cert: dict) -> str:
+    return hashlib.sha256(canonical_json(cert).encode()).hexdigest()
 
 
-#: Card-level keys that form the acting (quotable) layer of business-card/0.2.
-#: voice.sonic is included via the voice key. field_provenance excluded.
-#: Must match ACTING_KEYS in the TypeScript compiler's card-md.ts exactly.
+#: SID acting keys — the fields an agent acts on. Genesis, time, provenance,
+#: changelog and appendix are attestation/history, never acting state.
+#: MUST match ACTING_KEYS in implementations/typescript/src/sid.ts exactly.
 ACTING_KEYS = (
     "identity",
-    "voice",
-    "offerings",
-    "operations",
-    "policies",
-    "handoff",
-    "knowledge",
+    "capabilities",
+    "memory",
+    "lifecycle",
+    "status",
 )
 
 
-def acting_fields(card: dict) -> dict:
-    return {k: card[k] for k in ACTING_KEYS if k in card}
+def acting_fields(cert: dict) -> dict:
+    return {k: cert[k] for k in ACTING_KEYS if k in cert}
 
 
-def acting_hash(card: dict) -> str:
+def acting_hash(cert: dict) -> str:
     """SHA-256 of the canonical JSON of the acting layer only."""
-    return hashlib.sha256(canonical_json(acting_fields(card)).encode()).hexdigest()
+    return hashlib.sha256(canonical_json(acting_fields(cert)).encode()).hexdigest()
