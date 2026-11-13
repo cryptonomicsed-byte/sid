@@ -63,38 +63,114 @@ Sections appear in this order. Every section is emitted with a machine-readable 
 | `parent` | `sid_…` \| null | lineage; null for a root agent |
 | `issuer` | string \| null | who minted this version |
 | `description` | string | one sentence, optional |
+| `odu` | object | the **If-Script** base reading: `{index, name, vessel, prescription?}` resolved from the Odù corpus at mint time, so a verifier need not hold the corpus to know what was cast |
+| `calabash` | object | the **Digital Calabash** reading of the composed Odù (see below) |
 
 Invariant: `odu_link == (odu_primary << 8) | odu_secondary`. A certificate whose Odu fields
 disagree with its link is malformed — the address is derived, never independently authored.
 
+#### The Digital Calabash — 16 Action Vessels over 65,536 Odù
+
+`odu_link` is not a pair of numbers. It is a composed Odù in If-Script's 65,536 space:
+`compose_id(top, bottom) = top << 8 | bottom`. `identity.calabash` records what that address
+actually resolves to:
+
+`id`, `top`, `bottom`, `name`, `universal_name`, `archetype`, `description`, `vessel`,
+`interpretation_type` (`synthetic` for the base 256, `composed` above), `prescriptions`,
+`taboos`.
+
+The 16 **Action Vessels** structure the whole space — a composed Odù inherits the vessel of
+its TOP base-Odù:
+
+> Genesis · Void · Attention · Loop · Receipt · Mask · Residue · Execution
+> Swarm · Restraint · Migration · Consent · Vision · Growth · Seal · Rhythm
+
+Invariants, checked without the corpus (the verifier is data-only, so any implementation can
+enforce them):
+
+- `calabash.id == odu_link`, `calabash.top == odu_primary`, `calabash.bottom == odu_secondary`
+- `calabash.vessel` names one of the 16
+
+A certificate whose Calabash reading disagrees with its own address is malformed: the reading
+is derived from the address, and an address that disagrees with its reading has been edited.
+
 ### 4.2 Genesis
 `entropy_source` (`ifascript/cowrie-v1`), `entropy_commitment` (64-hex), `seed_hash` (64-hex),
-`keygen` (`gix_kdf_v1+bipon39`). **Hashes only.** The mnemonic, seed and keys never appear.
+`keygen` (`gix_kdf_v1+bipon39`), and `bipon` (`{harmonic_signature, derivation_root_id}` —
+Bipon39's own proofs, so the key lineage is named rather than implied). **Hashes only.** The
+mnemonic, seed and keys never appear.
 
 ### 4.3 Time
-`birth_block` (integer), `birth_block_hash` (string), `ots_proof` (string ref \| null),
-`anchored` (boolean). `anchored: true` requires `ots_proof` — the verifier enforces it.
+
+Two authorities, never one. **Koodu is the calendar** (epoch / cycle / phase, derived from a
+block height: 780 000 genesis, 144 blocks/day). **The OKF pipeline is the clock** (a verified
+height plus an OpenTimestamps proof). A certificate records both, because a calendar without a
+clock is arithmetic and a clock without a calendar is a number.
+
+Clock fields — written by the OKF pipeline, never by the issuer:
+`birth_block` (integer \| null), `birth_block_hash` (string \| null),
+`clock_source` (`unattested` until OKF speaks, then `okf`),
+`ots_proof` (string ref \| null), `ots_status` (`pending` \| `complete` \| null),
+`anchor_block` / `anchor_block_hash` (the block the proof lands at — **not** the birth),
+`anchored` (boolean).
+
+Calendar fields — written by Koodu: `calendar.epoch`, `calendar.cycle`, `calendar.phase`
+(non-negative integers), `calendar.basis` (`height` \| `gregorian`).
+
+Three rules the verifier enforces:
+
+1. `anchored: true` requires `ots_proof` **and** `ots_status == "complete"`. A fresh OTS stamp
+   is a commitment to a calendar server, not a Bitcoin attestation; calling it anchored is the
+   exact overclaim this format exists to prevent.
+2. `anchored: true` requires `clock_source == "okf"`. The clock has one owner.
+3. `calendar` must equal the coordinates the **birth** height implies. The anchor lands at a
+   later block and never rewrites birth.
 
 ### 4.4 Capabilities
 `skills` (array of manifest names), `permissions` (array of capability strings),
 `namespaces` (array). What the agent may do — declared, not implied.
 
 ### 4.5 Memory
-`locator` (string \| null — e.g. a `GixMinipaeLocator` or NIP-AE `d`-tag), `namespace_root`
-(64-hex \| null). A reference and a root; never the memory itself.
+
+Owned by **minipae** (NIP-AE). `locator` (string \| null — the agent's minipae key or an
+addressable `d`-tag), `namespace_root` (64-hex \| null — the merkle root of the agent's memory
+namespace at birth), `glyph_root` (a single GIX glyph **character** \| null — a fold of the
+genesis fact, not a hash), `birth_glyph` (same kind). A reference, a root and a glyph; never
+the memory itself.
 
 ### 4.6 Provenance
-`trace_chain_head` (64-hex \| null — e.g. Mycelium chain head), `profile_id` (string \| null —
-the runtime profile this certificate minted).
 
-### 4.7 Lifecycle
+`trace_chain_head` (64-hex \| null — the **mycelium** chain head at birth), `profile_id`
+(string \| null — the runtime profile this certificate minted), `manifest_hash` (64-hex \|
+null — the canonical hash of the agent's `AgentManifest`, so the certificate commits to every
+manifest field without duplicating them).
+
+### 4.7 Subsystem binding (appendix)
+
+The appendix carries `subsystems`, naming the owner of each function so the document is a map
+of the agent's real stack rather than a bag of fields:
+
+```json
+"subsystems": {
+  "identity": "gix", "memory": "minipae", "coordination": "waggle",
+  "trace": "mycelium", "clock": "okf", "calendar": "koodu"
+}
+```
+
+`coordination` records the waggle field (`{field, kind}`) — deterministic, because the kernel
+keys the field by agent id. `network` carries the manifest's network bindings.
+
+A subsystem that is not present is recorded as absent (`null` or the key omitted). A missing
+binding is a fact about the deployment, never something to invent.
+
+### 4.8 Lifecycle
 `state` (`cast|live|suspended|retired`) and `history` (array of `{state, at}`), append-only.
 `lifecycle.state` must equal the top-level `status`.
 
-### 4.8 Changelog
+### 4.9 Changelog
 Array of human-readable strings, oldest first. One line per version.
 
-### 4.9 Appendix
+### 4.10 Appendix
 Free-form object for humans and planners. **Not** quotable, **not** in `acting_hash`.
 
 ## 5. The hashing contract

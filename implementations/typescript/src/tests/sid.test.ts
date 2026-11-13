@@ -135,6 +135,49 @@ test("lifecycle.state must equal status", () => {
   assert.ok(r.errors.some((e: string) => e.includes("lifecycle.state must equal status")), fmt(r.errors));
 });
 
+test("calabash reading must match the address", () => {
+  const bad = clone(minimal);
+  bad.identity.calabash = {
+    id: bad.identity.odu_link,
+    top: bad.identity.odu_primary,
+    bottom: 1, // not odu_secondary
+    vessel: "Seal",
+  };
+  const r = s.verifySid(s.finalizeSid(bad));
+  assert.equal(r.ok, false);
+  assert.ok(r.errors.some((e: string) => e.includes("calabash")), fmt(r.errors));
+});
+
+test("anchored requires an attested proof and the OKF clock", () => {
+  const base = clone(minimal);
+  base.status = "live";
+  base.lifecycle = { state: "live", history: [{ state: "live", at: base.born_at }] };
+  const pending = clone(base);
+  pending.time = {
+    ...base.time,
+    anchored: true,
+    ots_proof: "x.ots",
+    ots_status: "pending",
+    clock_source: "okf",
+    calendar: { epoch: 1, cycle: 2, phase: 3 },
+  };
+  const r = s.verifySid(s.finalizeSid(pending));
+  assert.equal(r.ok, false);
+  assert.ok(r.errors.some((e: string) => e.includes('ots_status = "complete"')), fmt(r.errors));
+
+  const wrongClock = clone(pending);
+  wrongClock.time = { ...pending.time, ots_status: "complete", clock_source: "unattested" };
+  const r2 = s.verifySid(s.finalizeSid(wrongClock));
+  assert.equal(r2.ok, false);
+  assert.ok(r2.errors.some((e: string) => e.includes('clock_source = "okf"')), fmt(r2.errors));
+
+  // complete + okf + integer calendar passes
+  const good = clone(pending);
+  good.time = { ...pending.time, ots_status: "complete" };
+  const ok = s.verifySid(s.finalizeSid(good));
+  assert.equal(ok.ok, true, fmt(ok.errors));
+});
+
 test("birth event: kind 30401, d tag, no secrets, no memory locator by default", () => {
   const ev = s.birthEvent(full);
   assert.equal(ev.kind, 30401);

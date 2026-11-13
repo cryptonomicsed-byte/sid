@@ -82,6 +82,29 @@ export function verifySid(cert: any, previous?: any): { ok: boolean; errors: str
       if (i.odu_link !== expected)
         add(`identity.odu_link ${i.odu_link} != (odu_primary<<8|odu_secondary) ${expected}`);
     }
+    // Digital Calabash: the reading is derived from the address, so it must
+    // agree with it. Data-only — no Odù corpus needed to check this.
+    const cal = i.calabash;
+    if (cal !== undefined) {
+      if (!cal || typeof cal !== "object") {
+        add("identity.calabash must be an object");
+      } else {
+        if (
+          !Number.isInteger(cal.id) ||
+          !Number.isInteger(cal.top) ||
+          !Number.isInteger(cal.bottom)
+        ) {
+          add("identity.calabash id/top/bottom must be integers");
+        } else if (cal.id !== i.odu_link || cal.top !== i.odu_primary || cal.bottom !== i.odu_secondary) {
+          add(
+            `identity.calabash ${cal.id}/${cal.top}/${cal.bottom} disagrees with the Odu fields ` +
+              `${i.odu_link}/${i.odu_primary}/${i.odu_secondary}`,
+          );
+        }
+        if (typeof cal.vessel !== "string" || !cal.vessel)
+          add("identity.calabash.vessel must name one of the 16 Action Vessels");
+      }
+    }
   }
 
   if (!HEX64.test(String(cert.hash || ""))) add("hash must be 64-hex");
@@ -107,8 +130,27 @@ export function verifySid(cert: any, previous?: any): { ok: boolean; errors: str
 
   if (cert.lifecycle && cert.lifecycle.state !== undefined && cert.lifecycle.state !== cert.status)
     add("lifecycle.state must equal status");
-  if (cert.time && cert.time.anchored === true && !cert.time.ots_proof)
-    add("time.anchored = true requires time.ots_proof");
+  const t = cert.time;
+  if (t) {
+    if (t.anchored === true && !t.ots_proof) add("time.anchored = true requires time.ots_proof");
+    // A fresh OTS stamp is a commitment to a calendar server, not a Bitcoin
+    // attestation. Claiming anchored on it is an overclaim.
+    if (t.anchored === true && t.ots_status !== "complete")
+      add('time.anchored = true requires time.ots_status = "complete"');
+    // The clock has exactly one owner.
+    if (t.anchored === true && t.clock_source !== "okf")
+      add('time.anchored = true requires time.clock_source = "okf"');
+    if (t.calendar !== undefined) {
+      if (!t.calendar || typeof t.calendar !== "object") {
+        add("time.calendar must be an object");
+      } else {
+        for (const k of ["epoch", "cycle", "phase"]) {
+          const v = t.calendar[k];
+          if (!Number.isInteger(v) || v < 0) add(`time.calendar.${k} must be a non-negative integer`);
+        }
+      }
+    }
+  }
 
   for (const forbidden of ["seed", "mnemonic", "private_key", "nsec", "secret"]) {
     if (cert.genesis && cert.genesis[forbidden] !== undefined) add(`genesis must not carry ${forbidden}`);
