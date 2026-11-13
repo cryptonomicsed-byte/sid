@@ -107,7 +107,10 @@
           "maximum": 255
         },
         "npub": {
-          "type": "string",
+          "type": [
+            "string",
+            "null"
+          ],
           "pattern": "^npub1[0-9a-z]{20,}$"
         },
         "principal": {
@@ -134,7 +137,10 @@
           ]
         },
         "description": {
-          "type": "string",
+          "type": [
+            "string",
+            "null"
+          ],
           "maxLength": 500
         },
         "odu": {
@@ -267,11 +273,18 @@
       "type": "object",
       "properties": {
         "birth_block": {
-          "type": "integer",
-          "minimum": 0
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0,
+          "description": "null when no Bitcoin height was available at birth (gregorian fallback)"
         },
         "birth_block_hash": {
-          "type": "string"
+          "type": [
+            "string",
+            "null"
+          ]
         },
         "ots_proof": {
           "type": [

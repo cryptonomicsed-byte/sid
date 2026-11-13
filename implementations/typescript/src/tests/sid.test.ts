@@ -178,6 +178,30 @@ test("anchored requires an attested proof and the OKF clock", () => {
   assert.equal(ok.ok, true, fmt(ok.errors));
 });
 
+test("conformance vectors: the same verdicts the Python implementation must give", () => {
+  const vectors = require("../../../../conformance/vectors.json").vectors;
+  const bases: Record<string, any> = { minimal, full };
+  for (const v of vectors) {
+    const cert = clone(bases[v.base]);
+    for (const op of v.set) {
+      const path = op.slice(0, -1);
+      const value = op[op.length - 1];
+      let node = cert;
+      for (const k of path.slice(0, -1)) node = node[k];
+      node[path[path.length - 1]] = value;
+    }
+    const fin = v.restamp ? s.finalizeSid(cert) : cert;
+    const r = s.verifySid(fin);
+    assert.equal(r.ok, v.ok, `${v.name}: expected ok=${v.ok}, got ${fmt(r.errors)}`);
+    if (v.ok === false && v.error) {
+      assert.ok(
+        r.errors.some((e: string) => e.includes(v.error)),
+        `${v.name}: expected "${v.error}" in ${fmt(r.errors)}`,
+      );
+    }
+  }
+});
+
 test("birth event: kind 30401, d tag, no secrets, no memory locator by default", () => {
   const ev = s.birthEvent(full);
   assert.equal(ev.kind, 30401);
