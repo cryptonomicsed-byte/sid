@@ -138,3 +138,8 @@ test("signature verification never throws on garbage", () => {
     assert.equal(sigs.verify(alg, "00".repeat(32), "m", "00".repeat(64)), false);
   }
 });
+
+test("canonical JSON escapes DEL exactly as Python does", () => {
+  const { canonicalJson } = require("../canonical");
+  assert.equal(canonicalJson({ s: "a\u007fb\u0001" }), '{"s":"a\\u007fb\\u0001"}');
+});
