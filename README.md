@@ -4,9 +4,23 @@
 issuance *constitutes* an agent — identity, genesis, time, capabilities, memory, provenance,
 lifecycle — with every version anchorable to a trustless clock.
 
-- **Format:** `sid/0.1`
+- **Formats:** `sid/0.2` (neutral profile, issuer-signed — use this for new agents) and
+  `sid/0.1` (the original, still verified under its own rules)
 - **File:** `SID.md` at the agent root
 - **Status:** draft standard
+
+| | `sid/0.1` | `sid/0.2` |
+|---|---|---|
+| Proves the document was not altered | yes | yes |
+| Proves who issued it | no | yes — issuer signature against the verifier's trust anchors |
+| Proves the agent holds its keys | no | yes — each key binding carries a proof of possession |
+| Required application-specific fields | Odù, Calabash | none (carried under `extensions`) |
+| Runtime endpoints | not covered | separate signed `sid-runtime/0.2` statement |
+| Spec | [`spec/sid-0.1.md`](spec/sid-0.1.md) | [`spec/sid-0.2.md`](spec/sid-0.2.md) |
+
+The rest of this README describes `sid/0.1`. Read [`spec/sid-0.2.md`](spec/sid-0.2.md) for the
+neutral profile; `sid/0.1` documents are never rewritten, and migration issues a new
+`sid/0.2` chain that records where it came from.
 
 Derived from [`card-protocol`](https://github.com/cryptonomicsed-byte/card-protocol) — the
 `business-card` format stays there, for HelixMain's Business DNA cards. SID keeps the
