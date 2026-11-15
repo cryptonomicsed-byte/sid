@@ -18,6 +18,11 @@ lifecycle — with every version anchorable to a trustless clock.
 | Runtime endpoints | not covered | separate signed `sid-runtime/0.2` statement |
 | Spec | [`spec/sid-0.1.md`](spec/sid-0.1.md) | [`spec/sid-0.2.md`](spec/sid-0.2.md) |
 
+Built on `sid/0.2`: [`spec/helix-qr-1.md`](spec/helix-qr-1.md), **signed QR contact references** (`helix-qr/1`). A QR code is a
+pointer that carries no key and no address; the issuer signs it, the resolver is untrusted for content,
+and the client verifies the domain binding, expiry, status and the sid certificate behind every contact.
+111 conformance vectors in [`conformance/qr`](conformance/qr), passed by Python, TypeScript and (the resolver subset) Go.
+
 The rest of this README describes `sid/0.1`. Read [`spec/sid-0.2.md`](spec/sid-0.2.md) for the
 neutral profile; `sid/0.1` documents are never rewritten, and migration issues a new
 `sid/0.2` chain that records where it came from.

@@ -37,7 +37,7 @@ const SECRET_KEYS = ["seed", "mnemonic", "private_key", "nsec", "secret", "secre
 
 const HEX64 = /^[0-9a-f]{64}$/;
 const HEX128 = /^[0-9a-f]{128}$/;
-const ID_RE = /^sid_[a-z0-9][a-z0-9-]*$/;
+export const ID_RE = /^sid_[a-z0-9][a-z0-9-]*$/;
 const SLUG_RE = /^[a-z0-9][a-z0-9-]*$/;
 const NS_RE = /^[a-z0-9][a-z0-9_.-]*$/;
 const TIME_RE = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$/;
@@ -117,7 +117,7 @@ export function signDocument(doc: any, alg: string, secretHex: string): any {
 }
 
 // ── issuer authority ─────────────────────────────────────────────────────────
-function issuerCheck(doc: any, trust: any, signedAt: any): { errors: string[]; untrusted: string[]; verified: boolean } {
+export function issuerCheck(doc: any, trust: any, signedAt: any): { errors: string[]; untrusted: string[]; verified: boolean } {
   const errors: string[] = [];
   const untrusted: string[] = [];
   const done = (verified: boolean) => ({ errors, untrusted, verified });
@@ -176,7 +176,7 @@ function issuerCheck(doc: any, trust: any, signedAt: any): { errors: string[]; u
   return done(true);
 }
 
-function findSecrets(node: any, path = ""): string[] {
+export function findSecrets(node: any, path = ""): string[] {
   const found: string[] = [];
   if (Array.isArray(node)) {
     node.forEach((v, i) => found.push(...findSecrets(v, `${path}[${i}]`)));
