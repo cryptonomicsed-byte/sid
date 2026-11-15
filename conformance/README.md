@@ -102,3 +102,28 @@ python3 conformance/birth-event-check.py /tmp/ev.json
   tool's job (OpenTimestamps → Bitcoin), not the format's.
 - **Relay behaviour.** That kind 30401 replaces per `d` tag is NIP-01 semantics, not
   something a fixture can prove offline.
+
+# Conformance — `sid/0.2`
+
+`conformance/v0.2/vectors.json` holds 54 self-contained cases: the documents, the options
+(trust anchors, previous version, known head, the migrated-from document, the clock) and
+the expected `ok`, `trusted`, and error or untrusted reason. An implementation needs only
+a verifier to run them.
+
+```sh
+python3 conformance/run_vectors_02.py          # Python reference
+cd implementations/typescript && npm test      # TypeScript (also runs the sid/0.1 suite)
+python3 conformance/v0.2/generate.py           # regenerate; output is byte-identical
+```
+
+They cover: valid certificates under both signature suites; no anchors, unknown issuer and
+unknown key; a tampered field, a tampered-and-rehashed document, a document signed by an
+attacker claiming a trusted issuer, a missing proof; issuer keys that are revoked, not yet
+valid or compromised; a binding copied from another agent, a binding with the wrong
+algorithm for its type, a swapped key; every status; chain breaks, a changed issuer,
+rewritten history, a version after retirement, an older version when the head is known;
+migration with a matching, tampered, mismatched and missing source; and runtime statements
+that are valid, expired, not yet valid, bound to the wrong protocol's key, over-privileged,
+signed by another issuer, tampered, or for a suspended agent.
+
+`conformance/v0.2/test-keys.json` holds **public test keys**. Never trust them.

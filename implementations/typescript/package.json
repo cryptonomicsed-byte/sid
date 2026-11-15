@@ -1,7 +1,7 @@
 {
   "name": "@sid-protocol/core",
-  "version": "0.1.0",
-  "description": "SID — Sovereign ID / Super Intelligence Document (sid/0.1): canonicalization, hash chain, SID.md emitter/parser/verifier, kind-30401 birth event",
+  "version": "0.2.0",
+  "description": "SID \u2014 Sovereign ID / Super Intelligence Document: sid/0.2 (issuer-signed neutral profile, key bindings, runtime statements) and sid/0.1 (canonicalization, hash chain, SID.md emitter/parser/verifier, kind-30401 birth event)",
   "license": "MIT",
   "main": "dist/canonical.js",
   "types": "dist/canonical.d.ts",
@@ -16,5 +16,8 @@
     "ajv": "^8.17.1",
     "ajv-formats": "^3.0.1",
     "typescript": "^5.6.0"
+  },
+  "dependencies": {
+    "@noble/curves": "^1.9.7"
   }
 }

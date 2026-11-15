@@ -1,0 +1,37 @@
+{
+  "format": "sid/0.2",
+  "id": "sid_front-desk",
+  "version": 1,
+  "status": "live",
+  "born_at": "2026-11-12T09:00:00Z",
+  "updated": "2026-11-12T09:00:00Z",
+  "issuer": {
+    "id": "issuer:helix-test-root",
+    "kid": "root-1"
+  },
+  "identity": {
+    "name": "Front Desk",
+    "type": "agent"
+  },
+  "lifecycle": {
+    "state": "live",
+    "history": [
+      {
+        "state": "cast",
+        "at": "2026-11-12T09:00:00Z"
+      },
+      {
+        "state": "live",
+        "at": "2026-11-12T09:00:00Z"
+      }
+    ]
+  },
+  "previous_version": null,
+  "previous_hash": "none",
+  "acting_hash": "04beef0d37a5e4777b0c5148ab8813c791e7fe7c50505f87eaa33a688c1d8ab8",
+  "hash": "a9c95fcd4ece403320a8fe2ff50d84e862676681524a848d33c3d6dcc0a52a22",
+  "proof": {
+    "alg": "ed25519",
+    "signature": "7056c77db5c46c29d4c99833541f57bf2313a229ebfef4d0af9bd3fe435e38a1d4eb63e8ba2ffd51968d8e355a07c3331f67d7157f450aa7690ec9de805f9405"
+  }
+}

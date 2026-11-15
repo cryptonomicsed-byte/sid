@@ -1,0 +1,97 @@
+{
+  "format": "sid/0.2",
+  "id": "sid_santinos-agent",
+  "version": 2,
+  "status": "live",
+  "born_at": "2026-11-12T09:00:00Z",
+  "updated": "2026-11-14T10:00:00Z",
+  "issuer": {
+    "id": "issuer:helix-test-root",
+    "kid": "root-1"
+  },
+  "identity": {
+    "name": "Santino's Pizza agent",
+    "type": "agent",
+    "description": "Answers calls and messages for Santino's Pizza.",
+    "parent": null,
+    "controller": "tenant:santinos"
+  },
+  "bindings": [
+    {
+      "id": "nostr-main",
+      "type": "nostr",
+      "alg": "bip340",
+      "public_key": "59d34ffe15bf8c7cd7e45455972e28ffcf15f48065470d7fd5d35c50f2141504",
+      "added_at": "2026-11-12T09:00:00Z",
+      "purposes": [
+        "messaging",
+        "call-signaling"
+      ],
+      "proof": "7a37d2aacca6d86376dab598b4d1584a8910987e476c4cd082eb4b91fff681d43793352b97f6acecfc88f12e9dde944b3e5afc9bf83dfe8c8ca2df274b476c88"
+    },
+    {
+      "id": "lan-main",
+      "type": "meshenger",
+      "alg": "ed25519",
+      "public_key": "e28a8f8ed97a920d5ad3b811c5753eacf10539a40be84ca3a8afe8c4fc3fad26",
+      "added_at": "2026-11-12T09:00:00Z",
+      "purposes": [
+        "call-signaling"
+      ],
+      "proof": "21ac44f4ef7e48fa55e72bc72bf7fb74079a84c51ffa54426d009cc77e44fd8719d27e24c784e6afbc00091d3b738c998f8cb745c47f9c491b0c76d00766c307"
+    }
+  ],
+  "capabilities": {
+    "skills": [
+      "front-desk"
+    ],
+    "permissions": [
+      "kb.search",
+      "ticket.create",
+      "call.transfer",
+      "booking.create"
+    ],
+    "namespaces": [
+      "mem/card/dna_pizza01"
+    ]
+  },
+  "memory": {
+    "provider": "minipae",
+    "locator": null
+  },
+  "lifecycle": {
+    "state": "live",
+    "history": [
+      {
+        "state": "cast",
+        "at": "2026-11-12T09:00:00Z"
+      },
+      {
+        "state": "live",
+        "at": "2026-11-12T09:05:00Z"
+      }
+    ]
+  },
+  "provenance": {
+    "profile_id": "helix/front-desk@1"
+  },
+  "extensions": {
+    "helix": {
+      "card_id": "dna_pizza01"
+    }
+  },
+  "changelog": [
+    "v1: issued"
+  ],
+  "appendix": {
+    "notes": "Not quotable. Not in acting_hash."
+  },
+  "previous_version": 1,
+  "previous_hash": "5c1ab7e246dfa64676bd8d10d64da1148985b1c259269fb7f5e49b7d5a025fa3",
+  "acting_hash": "0b6acb1f6d3d432395bee6dc649fd0ddf36b668b7def30bbd02bb7a2d9a86bdd",
+  "hash": "e8131136a417bb666ffe710f9d46cc27c9d3bf4c33871ccc103e597e7299940f",
+  "proof": {
+    "alg": "ed25519",
+    "signature": "eb047c5e52370bf8e56252ab0536bb10724d0649e9c81e377c641f36bac22b45cff2185c7441ef36e4383f6c5eed6153f72510e2c21c91974985b48ed3f9cd0d"
+  }
+}

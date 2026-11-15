@@ -51,7 +51,9 @@ function canonStr(s: string): string {
   let out = "";
   for (const ch of inner) {
     const cp = ch.codePointAt(0) as number;
-    if (cp < 128) {
+    // Python's ensure_ascii escapes everything outside space..~, DEL (0x7f)
+    // included; JSON.stringify leaves DEL raw, so it is escaped here.
+    if (cp < 128 && cp !== 0x7f) {
       out += ch;
     } else if (cp < 65536) {
       out += "\\u" + cp.toString(16).padStart(4, "0");

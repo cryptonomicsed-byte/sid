@@ -1,0 +1,40 @@
+{
+  "format": "sid-runtime/0.2",
+  "sid": "sid_santinos-agent",
+  "runtime_id": "agent-voice-santinos",
+  "adapter": {
+    "kind": "agent-voice",
+    "version": "0.1.0"
+  },
+  "endpoints": [
+    {
+      "type": "nostr",
+      "address": "wss://relay.example",
+      "binding": "nostr-main"
+    },
+    {
+      "type": "meshenger-lan",
+      "address": "192.0.2.10:10001",
+      "binding": "lan-main"
+    },
+    {
+      "type": "sip",
+      "address": "sip:95001@pbx.example"
+    }
+  ],
+  "capabilities": [
+    "kb.search",
+    "call.transfer"
+  ],
+  "issued_at": "2026-11-13T00:00:00Z",
+  "expires_at": "2026-12-13T00:00:00Z",
+  "issuer": {
+    "id": "issuer:helix-test-root",
+    "kid": "root-1"
+  },
+  "hash": "0dbb08cd869362071d399168ee88cbc4f002f5d8803064aa8f914ddbb802191a",
+  "proof": {
+    "alg": "ed25519",
+    "signature": "166b62b15da95934d5dabd3ec41621313f43a492c532fbbba64341e14aac3c4907bf707d6be6653199e9551aa5f7e7b9b119afa02c2e2e8eac95f46b5d985400"
+  }
+}

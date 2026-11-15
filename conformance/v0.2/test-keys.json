@@ -1,0 +1,45 @@
+{
+  "note": "PUBLIC TEST KEYS for the conformance suite. Never trust them.",
+  "keys": {
+    "issuer-root": {
+      "alg": "ed25519",
+      "secret": "fb34dd228ee30c0dcdfadd8d21394b05c88a1fa495b3fcda3f06e9b575a8fd2e",
+      "public_key": "c7fe089f345b54b73189eef4b81c0617e75782fa219221e596519cc867d8c8e7"
+    },
+    "issuer-root-next": {
+      "alg": "ed25519",
+      "secret": "b9d8a61349a73708db4711de444d9e8297b9aae820edcaa017cd511f2c30a401",
+      "public_key": "edc031a53b508427ca38f2020435f3f4957fe3a81e972ad51de4d5f5029d79b6"
+    },
+    "issuer-old": {
+      "alg": "ed25519",
+      "secret": "1342703ab4e90b564593739e27214558e1c9050092d2e57c27eceb2cf662bc6f",
+      "public_key": "cefa4619a26f023daaf7ed6ce001919cd11a13216ca103461557df51132fb73c"
+    },
+    "issuer-burned": {
+      "alg": "ed25519",
+      "secret": "759c7d09b962751de9b88a97dda1289d61c844738ee9859ba18b8cc999e651f8",
+      "public_key": "401da7f0ee19d65b1aa840cbc99974168aeae73fcc3d046a98a2c981de739840"
+    },
+    "issuer-schnorr": {
+      "alg": "bip340",
+      "secret": "9ff2e206df7c6b563949ff7662be0aeae45e2a6ff0e9abb3a641ed22a2f91cf6",
+      "public_key": "9f29fbee16e5205189e19470397e2dc9d24c4280d84ccbd491b3f20da4abb6bc"
+    },
+    "attacker": {
+      "alg": "ed25519",
+      "secret": "7199860f60f80b461c7d9af0ad8342c79b323dc735f88029e2f52e5d22461e02",
+      "public_key": "877106588dae2ee0b5e34a1c1f0545568bf6dababeff0373adc49b37a3a67f65"
+    },
+    "agent-nostr": {
+      "alg": "bip340",
+      "secret": "21657555e2d286534173d10817c58552d208e98fb73130c09febf14ec4996805",
+      "public_key": "59d34ffe15bf8c7cd7e45455972e28ffcf15f48065470d7fd5d35c50f2141504"
+    },
+    "agent-mesh": {
+      "alg": "ed25519",
+      "secret": "00b4f0d11e92af224e9671f7ee6b94cfe8a4952335dd1f9cbfe34f0e7c26391b",
+      "public_key": "e28a8f8ed97a920d5ad3b811c5753eacf10539a40be84ca3a8afe8c4fc3fad26"
+    }
+  }
+}
