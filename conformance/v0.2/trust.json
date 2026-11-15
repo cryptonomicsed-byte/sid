@@ -1,0 +1,44 @@
+{
+  "issuers": {
+    "issuer:helix-test-root": {
+      "keys": [
+        {
+          "kid": "root-1",
+          "alg": "ed25519",
+          "public_key": "c7fe089f345b54b73189eef4b81c0617e75782fa219221e596519cc867d8c8e7",
+          "not_before": "2026-01-01T00:00:00Z"
+        },
+        {
+          "kid": "root-2",
+          "alg": "ed25519",
+          "public_key": "edc031a53b508427ca38f2020435f3f4957fe3a81e972ad51de4d5f5029d79b6",
+          "not_before": "2027-01-01T00:00:00Z"
+        },
+        {
+          "kid": "old-1",
+          "alg": "ed25519",
+          "public_key": "cefa4619a26f023daaf7ed6ce001919cd11a13216ca103461557df51132fb73c",
+          "not_before": "2025-01-01T00:00:00Z",
+          "revoked_at": "2026-06-01T00:00:00Z"
+        },
+        {
+          "kid": "burned-1",
+          "alg": "ed25519",
+          "public_key": "401da7f0ee19d65b1aa840cbc99974168aeae73fcc3d046a98a2c981de739840",
+          "not_before": "2025-01-01T00:00:00Z",
+          "compromised": true
+        }
+      ]
+    },
+    "issuer:nostr-test-root": {
+      "keys": [
+        {
+          "kid": "s-1",
+          "alg": "bip340",
+          "public_key": "9f29fbee16e5205189e19470397e2dc9d24c4280d84ccbd491b3f20da4abb6bc",
+          "not_before": "2026-01-01T00:00:00Z"
+        }
+      ]
+    }
+  }
+}
